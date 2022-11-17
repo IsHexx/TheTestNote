@@ -3907,4 +3907,3 @@ end;
 insert into v_dept values(22,'CBA','ABC');
 select * from v_dept;
 ```
-

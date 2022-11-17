@@ -393,3 +393,171 @@ select * form t;                       --这里就可以直接对t数据进行�
 
 ```
 
+#### 阶段求和
+
+```
+create table Test_1
+(
+       date1 number(3),
+       amount number(3)
+);
+
+insert into Test_1 values(1,10);
+insert into Test_1 values(2,5);
+insert into Test_1 values(3,-5);
+insert into Test_1 values(4,20);
+insert into Test_1 values(5,15);
+insert into Test_1 values(6,-20);
+insert into Test_1 values(7,10);
+insert into Test_1 values(8,15);
+insert into Test_1 values(9,-10);
+insert into Test_1 values(10,5);
+commit
+
+方法一：
+select a.date1，
+       a.amount,
+       (select SUM(AMOUNT) from sales where date1<=a.date1) SUM_T from Test_1;
+       
+  方法二：
+       select date1,amount,sum(amount) over (order by date1 asc) from test_1；
+```
+
+#### 列转行
+
+```
+create table test_b
+(
+year1 number(10),
+month1 number(10),
+amount number(10,1)
+);
+
+insert into test_b values(1991,1,1.1);
+insert into test_b values(1991,2,1.2);
+insert into test_b values(1991,3,1.3);
+insert into test_b values(1991,4,1.4);
+insert into test_b values(1992,1,2.1);
+insert into test_b values(1992,2,2.2);
+insert into test_b values(1992,3,2.3);
+insert into test_b values(1992,4,2.4);
+commit;
+
+方法一
+select year1,
+max(case when month1=1 then amount end )m1,
+        max(case when month1=2 then amount end) m2, 
+         max(case when month1=3 then amount end) m3,  
+         max(case when month1=4 then amount end) m4  from test_b group by year1；
+
+方法二
+select * from test_b pivot (sum(amount) for month1 in (1 as m1,2 as m2,3 as m3,4 as m4));
+```
+
+#### 行转列
+
+```
+create table test_b1
+(YEAR1 number (30),
+M1 number (30,1),
+M2 number (30,1),
+M3 number (30,1),
+M4 number (30,1));
+insert into test_b1 (YEAR1, M1, M2, M3, M4)
+values (1991, 1.1, 1.2, 1.3, 1.4);
+
+insert into test_b1 (YEAR1, M1, M2, M3, M4)
+values (1992, 2.1, 2.2, 2.3, 2.4);
+COMMIT;
+
+方法
+select year1,'1' month1, M1 amount from test_b1
+union all
+select year1,'2' month1, M2 amount from test_b1
+union all
+select year1,'3' month1, M3 amount from test_b1
+union all
+select year1,'4' month1, M4 amount from test_b1;
+ 
+方法2
+SELECT * FROM TEST_B1 UNPIVOT (AMOUNT FOR MONTH1 IN (M1 AS 1 ,M2 AS 2,M3 AS 3,M4 AS 4));
+```
+
+#### 查询和s001 所学课程完全一致的人
+
+```
+select *
+ from student s1, student s2
+ where not exists
+ (select cno
+     from sc
+     where sc.sno = s1.sno
+      and sc.cno not in (select cno from sc where sc.sno = s2.sno))
+  and not exists
+ (select cno
+     from sc
+     where sc.sno = s2.sno
+      and sc.cno not in (select cno from sc where sc.sno = s1.sno))
+```
+
+#### 行列转换
+
+```
+select count(case when q.age<20 then 1 else null end),
+    count(case when q.age between 20 and 30 then 1 else null end),
+    count(case when q.age>30 then 1 else null end)
+     from qqinfo q;
+```
+
+#### 列转行，宽表转高表 
+
+```
+select * from qqinfo;
+select q.id,'qqno',to_char(q.qqno) from qqinfo q
+union
+select q.id,'name',q.name from qqinfo q;
+```
+
+#### pivot 高转宽
+
+```
+select * from a;
+select *
+ from a
+pivot(sum(num)
+  for dtime in(20190201, 20190202, 20190203));
+```
+
+#### unpivot 宽转高
+
+```
+select * from b;
+select *
+ from b unpivot(num for dtime in("20190201" as 20190201,
+                   "20190202" as 20190202,
+                   "20190203" as 20190203));
+```
+
+#### 笛卡尔积
+
+```
+踢足球问题
+ 不分主次场
+select  a.deptno ,b.deptno from dept a ,dept b where a.deptno<>b.deptno;
+
+分主次场 
+select  a.deptno ,b.deptno from dept a ,dept b where a.deptno<>b.deptno and a.deptno>b.deptno;
+
+select 
+sum(case when sex=1 then 1  end) 女,
+sum(case when sex=0 then 1  end) 男 from emp
+  select job,count(empno) from emp group by job；
+  select 
+  sum(case when job='CLERK' then 1 else 0 end ) CLERK,
+  sum(case when job='SALESMAN' then 1 else 0 end ) SALESMAN,
+  sum(case when job='PRESIDENT' then 1 else 0 end) PRESIDENT,
+  sum(case when job='MANAGER' then 1 else 0 end) MANAGER,
+  sum(case when job='ANALYST' then 1 else 0 end) ANALYST
+  from emp
+```
+
