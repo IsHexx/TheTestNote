@@ -542,22 +542,23 @@ select *
 
 ```
 踢足球问题
+
  不分主次场
-select  a.deptno ,b.deptno from dept a ,dept b where a.deptno<>b.deptno;
+select  a.deptno ,b.deptno from dept a ,dept b where a.deptno<>b.deptno；
 
 分主次场 
-select  a.deptno ,b.deptno from dept a ,dept b where a.deptno<>b.deptno and a.deptno>b.deptno;
+select  a.deptno ,b.deptno from dept a ,dept b where a.deptno<>b.deptno and a.deptno>b.deptno；
 
 select 
 sum(case when sex=1 then 1  end) 女,
 sum(case when sex=0 then 1  end) 男 from emp
   select job,count(empno) from emp group by job；
   select 
-  sum(case when job='CLERK' then 1 else 0 end ) CLERK,
-  sum(case when job='SALESMAN' then 1 else 0 end ) SALESMAN,
-  sum(case when job='PRESIDENT' then 1 else 0 end) PRESIDENT,
-  sum(case when job='MANAGER' then 1 else 0 end) MANAGER,
-  sum(case when job='ANALYST' then 1 else 0 end) ANALYST
-  from emp
+      sum(case when job='CLERK' then 1 else 0 end ) CLERK,
+      sum(case when job='SALESMAN' then 1 else 0 end ) SALESMAN,
+      sum(case when job='PRESIDENT' then 1 else 0 end) PRESIDENT,
+      sum(case when job='MANAGER' then 1 else 0 end) MANAGER,
+      sum(case when job='ANALYST' then 1 else 0 end) ANALYST
+  from emp；
 ```
 
