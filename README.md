@@ -1,4 +1,5 @@
 # TheTest-Not
 测试技能树
 
-![1741946683045](C:\Users\KkHex\AppData\Roaming\Typora\typora-user-images\1741946683045.png)
+![软件测试](https://github.com/user-attachments/assets/e308ae23-3782-4dc6-91fe-63d54f73fa04)
+
